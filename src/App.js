@@ -692,6 +692,13 @@ async function handleCreateOutlookDrafts(selectedRows) {
               padding: "6px 12px",
               borderRadius: 6,
             }}
+<div className="button-row">
+  <button onClick={handleOpenMailto}>Open Mailto ({selected.length})</button>
+  <button onClick={handleDownloadEml}>Download .eml (ZIP)</button>
+  <button onClick={() => handleCreateOutlookDrafts(selected)}>
+    Create Outlook Drafts (Graph)
+  </button>
+</div>
           >
             Download .eml (ZIP)
           </button>
