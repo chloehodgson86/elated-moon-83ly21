@@ -3,7 +3,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import Papa from "papaparse";
 import JSZip from "jszip";
 import * as RC from "recharts";
-
+import { createDrafts } from "./graph";
 /* ---------------- Date helpers for aging ---------------- */
 function toDate(v) {
   if (!v) return null;
@@ -469,6 +469,37 @@ export default function App() {
 
     return { contact, subject, body };
   }
+async function handleCreateOutlookDrafts(selectedRows) {
+  const STAFF_REPLY_TO = {
+    "Chloe Hodgson": "chloe.hodgson@paramountliquor.com.au",
+    "Nina": "nina.padilla@paramountliquor.com.au",
+    "Merry": "merry.adriano@paramountliquor.com.au",
+    "Mildred": "mildred.malalis@paramountliquor.com.au",
+    "Reynaldo": "reynaldo.gaspar@paramountliquor.com.au",
+    "Angel": "angelika.gabriel@paramountliquor.com.au",
+    "Charmaine": "charmaine.romero@paramountliquor.com.au"
+    "Toa": "toa.nansen@paramountliquor.com.au"
+  
+    // …etc
+  };
+
+  const messages = selectedRows.map(row => {
+    const subject = row.__subject;      // your generated subject
+    const htmlBody = row.__html;        // your generated email body
+    const to = row.__email;             // customer email
+    const owner = row.__ownerName;      // staff name from your data
+    const replyTo = STAFF_REPLY_TO[owner] || "accounts@yourcompany.com";
+    return { to, subject, htmlBody, replyTo };
+  });
+
+  try {
+    const created = await createDrafts(messages);
+    alert(`Created ${created.length} Outlook drafts.\nCheck your Outlook Drafts folder.`);
+  } catch (e) {
+    console.error(e);
+    alert(`Failed: ${e.message}`);
+  }
+}
 
   // bulk mailto
   async function openSelectedMailto() {
